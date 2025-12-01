@@ -3,6 +3,11 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
+# Python 打包信息目录以及checkpoints保存目录
+mattergen.egg-info
+checkpoints
+To.*
+
 # User-specific files
 *.rsuser
 *.suo
@@ -398,4 +403,4 @@ FodyWeavers.xsd
 *.sln.iml
 
 # Virtual environment
-.venv/
+.venv/To
