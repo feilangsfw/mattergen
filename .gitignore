@@ -6,6 +6,7 @@
 # Python 打包信息目录以及checkpoints保存目录
 mattergen.egg-info
 checkpoints
+data-release
 To
 
 # 测试结果目录
