@@ -42,6 +42,7 @@ def run_generation():
     structures = main(
         output_path=RESULTS_PATH,
         pretrained_name=MODEL_NAME,  # 使用预训练模型名，会自动使用缓存
+        # model_path=LOCAL_MODEL_PATH,  # 使用本地模型路径
         batch_size=BATCH_SIZE,
         num_batches=NUM_BATCHES,
         checkpoint_epoch=CHECKPOINT_EPOCH,
