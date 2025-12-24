@@ -5,14 +5,14 @@
 """
 
 import os
-from pathlib import Path
-from mattergen.scripts.generate import main
-
-# 在脚本开始时设置环境变量
+# 在任何其他import之前设置环境变量
 os.environ["HF_HOME"] = "/home/wczhou/data_linked/.cache/huggingface"
 os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
-# 重新启用离线模式，确保使用本地缓存
-os.environ["HF_HUB_OFFLINE"] = "1"
+# 移除离线模式，允许在线下载
+# os.environ["HF_HUB_OFFLINE"] = "1"
+
+from pathlib import Path
+from mattergen.scripts.generate import main
 
 # 获取当前脚本的目录，并设置项目根目录
 SCRIPT_DIR = Path(__file__).parent
@@ -35,16 +35,13 @@ def run_generation():
     if not results_dir.exists():
         raise FileNotFoundError(f"输出目录不存在: {results_dir.absolute()}")
 
-    # 调用生成函数
-    # 方式1: 使用预训练模型名（通过HF Hub缓存机制，当前使用这种方式）
-    # 方式2: 使用本地checkpoints目录模型（如果需要直接使用本地模型，取消下面的注释并注释上面的调用）
+    print(f"使用镜像端点: {os.environ.get('HF_ENDPOINT', '未设置')}")
+    print(f"缓存目录: {os.environ.get('HF_HOME', '未设置')}")
 
-    # 为便于切换，我们将两种方式的参数统一管理
-    # 选择其中一种方式，取消注释相应的代码
+    # 调用生成函数，使用预训练模型名
     structures = main(
         output_path=RESULTS_PATH,
         pretrained_name=MODEL_NAME,  # 使用预训练模型名，会自动使用缓存
-        # model_path=LOCAL_MODEL_PATH,  # 使用本地模型路径
         batch_size=BATCH_SIZE,
         num_batches=NUM_BATCHES,
         checkpoint_epoch=CHECKPOINT_EPOCH,
@@ -54,6 +51,7 @@ def run_generation():
 
     print(f"生成完成，共生成 {len(structures)} 个结构")
     print(f"结果保存在: {results_dir.absolute()}")
+
 
 if __name__ == "__main__":
     run_generation()
