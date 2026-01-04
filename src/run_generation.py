@@ -5,6 +5,7 @@
 """
 
 import os
+import sys
 # 在任何其他import之前设置环境变量
 os.environ["HF_HOME"] = "/home/wczhou/data_linked/.cache/huggingface"
 os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
@@ -12,11 +13,15 @@ os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
 # os.environ["HF_HUB_OFFLINE"] = "1"
 
 from pathlib import Path
-from mattergen.scripts.generate import main
 
 # 获取当前脚本的目录，并设置项目根目录
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_ROOT = SCRIPT_DIR.parent
+
+# 添加项目根目录到sys.path，以便导入mattergen
+sys.path.insert(0, str(PROJECT_ROOT))
+
+from mattergen.scripts.generate import main
 
 # 定义参数
 MODEL_NAME = "mp_20_base"  # 使用预训练模型名，从缓存加载
