@@ -23,32 +23,39 @@ PROJECT_ROOT = SCRIPT_DIR.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from mattergen.scripts.generate import main
+from mattergen.common.data.types import TargetProperty
 
 # 定义参数
-MODEL_NAME = "mp_20_base"  # 使用预训练模型名，从缓存加载
+MODEL_NAME = "chemical_system"  # 使用预训练模型名，从缓存加载
 # 本地模型路径，基于MODEL_NAME构建
 LOCAL_MODEL_PATH = str(PROJECT_ROOT / "checkpoints" / MODEL_NAME)
 # 本地模型路径，直接使用下载缓存
 # MODEL_PATH = "/home/wczhou/data_linked/.cache/huggingface/hub/models--microsoft--mattergen/snapshots/f981d511721156a4949caae7dcac6979afe97f3a/checkpoints/mattergen_base"
 RESULTS_PATH = str(PROJECT_ROOT / "results")  # 项目根目录下的results目录
-BATCH_SIZE = 16
-NUM_BATCHES = 1
-CHECKPOINT_EPOCH = "last"
+BATCH_SIZE = 16 # 每次迭代生成的样本数量
+NUM_BATCHES = 2 # 生成次数
+CHECKPOINT_EPOCH = "last" # 从模型检查点中加载哪个epoch的权重
+
 # 可选参数，根据需要取消注释
-# PROPERTIES_TO_CONDITION_ON = {"energy_above_hull": 0.05, "chemical_system": "Li-O"}
-# DIFFUSION_GUIDANCE_FACTOR = 2.0
+# COMPOSITIONS = [      # 只支持CSP模型
+#    {"Li": 2, "Mn": 1, "O": 3}
+#]
+PROPERTIES_TO_CONDITION_ON: TargetProperty = {
+    #"space_group": 225,
+    "chemical_system": "Y-Ba-Cu-O"}
+DIFFUSION_GUIDANCE_FACTOR = 2.0
 
 def run_generation():
     # 检查模型目录是否存在
     model_dir = Path(LOCAL_MODEL_PATH)
     if not model_dir.exists():
         raise FileNotFoundError(f"模型目录不存在: {model_dir.absolute()}")
-    
+
     # 检查config.yaml是否存在
     config_file = model_dir / "config.yaml"
     if not config_file.exists():
         raise FileNotFoundError(f"配置文件不存在: {config_file.absolute()}")
-    
+
     # 检查输出目录是否存在，不存在则报错
     results_dir = Path(RESULTS_PATH)
     if not results_dir.exists():
@@ -67,8 +74,9 @@ def run_generation():
         batch_size=BATCH_SIZE,
         num_batches=NUM_BATCHES,
         checkpoint_epoch=CHECKPOINT_EPOCH,
-        # properties_to_condition_on=PROPERTIES_TO_CONDITION_ON,
-        # diffusion_guidance_factor=DIFFUSION_GUIDANCE_FACTOR,
+        #target_compositions=COMPOSITIONS, # 只支持CSP模型
+        properties_to_condition_on=PROPERTIES_TO_CONDITION_ON,
+        diffusion_guidance_factor=DIFFUSION_GUIDANCE_FACTOR,
     )
 
     print(f"生成完成，共生成 {len(structures)} 个结构")
