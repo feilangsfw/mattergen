@@ -32,7 +32,8 @@ def get_pyg_device() -> torch.device:
     return torch.device("cpu")
 
 
-MODELS_PROJECT_ROOT = Path(__file__).resolve().parents[2]
+#MODELS_PROJECT_ROOT = Path(__file__).resolve().parents[2]
+MODELS_PROJECT_ROOT = Path(__file__).parents[2]
 print(f"MODELS_PROJECT_ROOT: {MODELS_PROJECT_ROOT}")
 
 # Set environment variable PROJECT_ROOT so that hydra / OmegaConf can access it.
