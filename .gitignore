@@ -16,6 +16,7 @@ output
 logs
 .venv
 .venv-container/
+outputs
 
 # User-specific files
 *.rsuser
