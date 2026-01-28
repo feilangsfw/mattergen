@@ -127,9 +127,9 @@ def run_training():
         schema = OmegaConf.structured(Config)
         final_config = OmegaConf.merge(schema, cfg)
 
-        # 启用自动恢复功能
+        # 禁用auto_resume功能以防止训练重复 - 这是问题的关键
         OmegaConf.set_struct(final_config, False)  # 临时关闭结构保护
-        final_config.auto_resume = True
+        final_config.auto_resume = False  # 将auto_resume设置为False
         OmegaConf.set_struct(final_config, True)  # 重新开启结构保护
 
         # 打印配置，但跳过可能引起eval解析错误的部分
