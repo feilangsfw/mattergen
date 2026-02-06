@@ -5,6 +5,7 @@
 此脚本等价于运行:
 mattergen-train data_module=mp_20 ~trainer.logger
 但允许通过Python代码直接修改参数，而不需要修改YAML文件
+OUTPUT_DIR设置不成功，模型目录仍为/home/wczhou/outputs
 """
 
 import os
@@ -18,6 +19,20 @@ PROJECT_ROOT = Path(__file__).parent.parent  # /home/wczhou/data_linked/projects
 os.environ["PROJECT_ROOT"] = str(PROJECT_ROOT)
 os.environ["MATTERGEN_MODELS_PROJECT_ROOT"] = str(PROJECT_ROOT)
 
+# 设置输出目录 - 创建一个独立的子目录用于稳定训练，避免与其他运行混淆
+#OUTPUT_DIR = str(PROJECT_ROOT / "outputs" )
+#os.environ["OUTPUT_DIR"] = OUTPUT_DIR
+#print(f"输出目录已设置为: {OUTPUT_DIR}")
+
+print("="*80)
+print("路径变量信息:")
+print(f"PROJECT_ROOT (Path object): {PROJECT_ROOT}")
+print(f"Environment PROJECT_ROOT: {os.environ.get('PROJECT_ROOT', 'NOT SET')}")
+print(f"Environment MATTERGEN_MODELS_PROJECT_ROOT: {os.environ.get('MATTERGEN_MODELS_PROJECT_ROOT', 'NOT SET')}")
+#print(f"Environment OUTPUT_DIR: {os.environ.get('OUTPUT_DIR', 'NOT SET')}")
+#print(f"OUTPUT_DIR 路径是否存在: {Path(OUTPUT_DIR).exists()}")
+print("="*80)
+
 # 重要：预设PYTHONPATH，确保Python能找到正确的mattergen模块
 sys.path.insert(0, str(PROJECT_ROOT))
 
@@ -25,7 +40,6 @@ import hydra
 import omegaconf
 import torch
 from omegaconf import OmegaConf
-
 
 # 现在导入mattergen相关模块
 from mattergen.diffusion.config import Config
@@ -65,12 +79,6 @@ def run_training():
     # GEMNET_NUM_BLOCKS = 2   # GemNet块的数量，降低以节省内存
     # GEMNET_CUTOFF = 7.0     # GemNet截断距离
 
-    print("="*80)
-    print("路径变量信息:")
-    print(f"PROJECT_ROOT (Path object): {PROJECT_ROOT}")
-    print(f"Environment PROJECT_ROOT: {os.environ.get('PROJECT_ROOT', 'NOT SET')}")
-    print(f"Environment MATTERGEN_MODELS_PROJECT_ROOT: {os.environ.get('MATTERGEN_MODELS_PROJECT_ROOT', 'NOT SET')}")
-    print("="*80)
     print("此脚本等価于运行以下命令:")
     print(f"mattergen-train data_module={DATA_MODULE_NAME} ~trainer.logger")
     print("+data_module.root_dir='{}'".format(DATASET_PATH))
