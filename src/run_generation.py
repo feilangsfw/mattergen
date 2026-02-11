@@ -26,7 +26,7 @@ from mattergen.scripts.generate import main
 from mattergen.common.data.types import TargetProperty
 
 # 定义参数
-MODEL_NAME = "chemical_system"  # 使用预训练模型名，从缓存加载
+MODEL_NAME = "mp20_csp_260211"  # 使用预训练模型名，从缓存加载
 # 本地模型路径，基于MODEL_NAME构建
 LOCAL_MODEL_PATH = str(PROJECT_ROOT / "checkpoints" / MODEL_NAME)
 # 本地模型路径，直接使用下载缓存
@@ -37,12 +37,12 @@ NUM_BATCHES = 2 # 生成次数
 CHECKPOINT_EPOCH = "last" # 从模型检查点中加载哪个epoch的权重
 
 # 可选参数，根据需要取消注释
-# COMPOSITIONS = [      # 只支持CSP模型
-#    {"Li": 2, "Mn": 1, "O": 3}
-#]
-PROPERTIES_TO_CONDITION_ON: TargetProperty = {
+COMPOSITIONS = [      # 只支持CSP模型
+    {"Y": 1, "Ba": 2, "Cu":3,"O": 7}
+]
+""" PROPERTIES_TO_CONDITION_ON: TargetProperty = {
     #"space_group": 225,
-    "chemical_system": "Y-Ba-Cu-O"}
+    "chemical_system": "Y-Ba-Cu-O"} """
 DIFFUSION_GUIDANCE_FACTOR = 2.0
 
 def run_generation():
@@ -74,9 +74,10 @@ def run_generation():
         batch_size=BATCH_SIZE,
         num_batches=NUM_BATCHES,
         checkpoint_epoch=CHECKPOINT_EPOCH,
-        #target_compositions=COMPOSITIONS, # 只支持CSP模型
-        properties_to_condition_on=PROPERTIES_TO_CONDITION_ON,
+        target_compositions=COMPOSITIONS, # 只支持CSP模型
+        #properties_to_condition_on=PROPERTIES_TO_CONDITION_ON,
         diffusion_guidance_factor=DIFFUSION_GUIDANCE_FACTOR,
+        sampling_config_name="csp",  # 添加这一行，指定使用CSP采样配置
     )
 
     print(f"生成完成，共生成 {len(structures)} 个结构")

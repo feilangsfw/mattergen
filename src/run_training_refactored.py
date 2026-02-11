@@ -69,7 +69,7 @@ def mattergen_main(cfg: omegaconf.DictConfig):
         cfg.data_module.batch_size.test = BATCH_SIZE_TEST
 
         # 显式设置 max_epochs 为 5（调试用途）
-        cfg.data_module.max_epochs = 3
+        #cfg.data_module.max_epochs = 3
 
         # 训练器参数
         cfg.trainer.accelerator = ACCELERATOR
